@@ -7,6 +7,13 @@ public class Attempt {
     private String first_attempt;
     private String last_attempt;
 
+    public Attempt(String ip, int attempts, String first_attempt, String last_attempt) {
+        this.ip = ip;
+        this.attempts = attempts;
+        this.first_attempt = first_attempt;
+        this.last_attempt = last_attempt;
+    }
+
     public String getIp() {
         return ip;
     }

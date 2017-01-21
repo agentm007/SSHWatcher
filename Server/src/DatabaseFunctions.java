@@ -28,6 +28,7 @@ public class DatabaseFunctions {
     }
 
     public static void insertNewIP(String ip, int attempts, String firstAttempt, String lastAttempt){
+        Config.load();
         String query = "INSERT INTO ips (ip, attempts, first_attempt, last_attempt)" +
                 "VALUES(?, ?, ?, ?);";
         try{
@@ -51,6 +52,7 @@ public class DatabaseFunctions {
     }
 
     public static void incrementAttemptAndUpdateLastAttempt(String ip, String lastAttempt){
+        Config.load();
         String query = "UPDATE ips SET attempts=attempts+1, last_attempt=? WHERE ip=?";
         try{
             Class.forName(JDBC_DRIVER);
@@ -69,20 +71,24 @@ public class DatabaseFunctions {
 
     }
 
-    //TODO Test method
-    public static void getRowByIP(String ip){
-        String query = "SELECT * FROM ips WHERE ip=?";
+    public static Attempt getRowByIP(String ip){
+        Config.load();
+        String query = "SELECT * FROM ips WHERE ip = ?;";
+        Attempt attempt = null;
         try{
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(Config.getConnectionString(), Config.getUsername(), Config.getPassword());
             conn.setAutoCommit(false);
             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, ip);
-            int rowsAffected = stmt.executeUpdate();
-            conn.commit();
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next())
+                attempt = new Attempt(rs.getString("ip"), rs.getInt("attempts"), rs.getString("first_attempt"), rs.getString("last_attempt"));
+            return attempt;
         }
         catch (Exception e){
-
+            e.printStackTrace();
+            return attempt;
         }
     }
     
