@@ -7,7 +7,7 @@ public class Main {
 
         //TODO Write install instructions
         if(args[0].equals("--install")){
-
+            Config.createAndUpdate();
         }
         else {
             Server.start();
