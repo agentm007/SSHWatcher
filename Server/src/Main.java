@@ -4,5 +4,14 @@
 public class Main {
 
     public static void main(String[] args) {
+
+        //TODO Write install instructions
+        if(args[0].equals("--install")){
+
+        }
+        else {
+            Server.start();
+        }
+
     }
 }
