@@ -4,9 +4,6 @@
 public class Main {
 
     public static void main(String[] args) {
-        //Config.create();
-        Config.load();
 
-        System.out.println(Config.getPort());
     }
 }

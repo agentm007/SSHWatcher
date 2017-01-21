@@ -22,7 +22,8 @@ public class DatabaseFunctions {
             conn.commit();
         }
         catch(Exception e){
-            System.out.println("Didn't work");
+            System.out.println("Failed to Create Table");
+            e.printStackTrace();
         }
     }
 
@@ -44,18 +45,45 @@ public class DatabaseFunctions {
         }
         catch(Exception e){
             System.out.println("Something Went Wrong.");
+            e.printStackTrace();
         }
 
     }
 
-    public static void incrimentAttempt(){
-        String query = "";
+    public static void incrementAttemptAndUpdateLastAttempt(String ip, String lastAttempt){
+        String query = "UPDATE ips SET attempts=attempts+1, last_attempt=? WHERE ip=?";
+        try{
+            Class.forName(JDBC_DRIVER);
+            Connection conn = DriverManager.getConnection(Config.getConnectionString(), Config.getUsername(), Config.getPassword());
+            conn.setAutoCommit(false);
+            PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, lastAttempt);
+            stmt.setString(2, ip);
+            int rowsAffected = stmt.executeUpdate();
+            conn.commit();
+        }
+        catch (Exception e){
+            System.out.println("Something Went Wrong.");
+            e.printStackTrace();
+        }
 
     }
 
-    public static void updateLastDate(){
-        String query = "";
+    //TODO Test method
+    public static void getRowByIP(String ip){
+        String query = "SELECT * FROM ips WHERE ip=?";
+        try{
+            Class.forName(JDBC_DRIVER);
+            Connection conn = DriverManager.getConnection(Config.getConnectionString(), Config.getUsername(), Config.getPassword());
+            conn.setAutoCommit(false);
+            PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, ip);
+            int rowsAffected = stmt.executeUpdate();
+            conn.commit();
+        }
+        catch (Exception e){
 
+        }
     }
     
 }

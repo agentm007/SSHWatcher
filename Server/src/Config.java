@@ -1,5 +1,3 @@
-import org.apache.commons.io.FileUtils;
-
 import java.io.*;
 import java.util.Properties;
 
@@ -31,11 +29,7 @@ public class Config {
         }
     }
 
-    public static void update(){
-
-    }
-
-    public static void create(){
+    public static void createAndUpdate(){
         determineOS();
         try {
             Properties props = setProperties();
