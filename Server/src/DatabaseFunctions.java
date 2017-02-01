@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  * Created by Alex on 1/14/2017.
@@ -89,6 +90,28 @@ public class DatabaseFunctions {
         catch (Exception e){
             e.printStackTrace();
             return attempt;
+        }
+    }
+
+    public static ArrayList<Attempt> selectTopAttempts(int top){
+        Config.load();
+        String query = "SELECT * FROM ips ORDER BY attempts DESC LIMIT ?;";
+        ArrayList<Attempt> attempts = new ArrayList<Attempt>();
+        try{
+            Class.forName(JDBC_DRIVER);
+            Connection conn = DriverManager.getConnection(Config.getConnectionString(), Config.getUsername(), Config.getPassword());
+            conn.setAutoCommit(false);
+            PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            stmt.setInt(1, top);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                attempts.add(new Attempt(rs.getString("ip"), rs.getInt("attempts"), rs.getString("first_attempt"), rs.getString("last_attempt")));
+            }
+            return attempts;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return attempts;
         }
     }
     

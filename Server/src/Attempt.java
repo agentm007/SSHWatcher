@@ -45,4 +45,9 @@ public class Attempt {
     public void setLast_attempt(String last_attempt) {
         this.last_attempt = last_attempt;
     }
+
+    public String toString(){
+        String str = ip + " "  + attempts + " " + first_attempt + " " + last_attempt;
+        return str;
+    }
 }
