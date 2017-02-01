@@ -11,8 +11,8 @@ public class DatabaseFunctions {
         Config.load();
         String query = "CREATE TABLE ips( ip VARCHAR(15) NOT NULL," +
                 "attempts INT," +
-                "first_attempt DATE," +
-                "last_attempt DATE," +
+                "first_attempt TIMESTAMP," +
+                "last_attempt TIMESTAMP," +
                 "PRIMARY KEY (ip))";
         try{
             Class.forName(JDBC_DRIVER);
