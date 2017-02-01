@@ -18,7 +18,7 @@ public class Server {
                 String ipAddress = client.getInetAddress().toString().substring(1);
                 client.close();
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");
                 String date = simpleDateFormat.format(new Date());
 
                 Attempt attempt = DatabaseFunctions.getRowByIP(ipAddress);
