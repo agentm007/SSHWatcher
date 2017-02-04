@@ -11,8 +11,8 @@ public class DatabaseFunctions {
         Config.load();
         String query = "CREATE TABLE ips( ip VARCHAR(15) NOT NULL," +
                 "attempts INT," +
-                "first_attempt TIMESTAMP," +
-                "last_attempt TIMESTAMP," +
+                "first_attempt DATETIME," +
+                "last_attempt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
                 "PRIMARY KEY (ip))";
         try{
             Class.forName(JDBC_DRIVER);
@@ -28,10 +28,10 @@ public class DatabaseFunctions {
         }
     }
 
-    public static void insertNewIP(String ip, int attempts, String firstAttempt, String lastAttempt){
+    public static void insertNewIP(String ip, int attempts, String firstAttempt){
         Config.load();
-        String query = "INSERT INTO ips (ip, attempts, first_attempt, last_attempt)" +
-                "VALUES(?, ?, ?, ?);";
+        String query = "INSERT INTO ips (ip, attempts, first_attempt)" +
+                "VALUES(?, ?, ?);";
         try{
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(Config.getConnectionString(), Config.getUsername(), Config.getPassword());
@@ -40,7 +40,6 @@ public class DatabaseFunctions {
             stmt.setString(1, ip);
             stmt.setInt(2, attempts);
             stmt.setString(3, firstAttempt);
-            stmt.setString(4, lastAttempt);
             int rowsAffected = stmt.executeUpdate();
             conn.commit();
 
@@ -52,16 +51,15 @@ public class DatabaseFunctions {
 
     }
 
-    public static void incrementAttemptAndUpdateLastAttempt(String ip, String lastAttempt){
+    public static void incrementAttemptAndUpdateLastAttempt(String ip){
         Config.load();
-        String query = "UPDATE ips SET attempts=attempts+1, last_attempt=? WHERE ip=?";
+        String query = "UPDATE ips SET attempts=attempts+1 WHERE ip=?";
         try{
             Class.forName(JDBC_DRIVER);
             Connection conn = DriverManager.getConnection(Config.getConnectionString(), Config.getUsername(), Config.getPassword());
             conn.setAutoCommit(false);
             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, lastAttempt);
-            stmt.setString(2, ip);
+            stmt.setString(1, ip);
             int rowsAffected = stmt.executeUpdate();
             conn.commit();
         }
@@ -84,7 +82,7 @@ public class DatabaseFunctions {
             stmt.setString(1, ip);
             ResultSet rs = stmt.executeQuery();
             if(rs.next())
-                attempt = new Attempt(rs.getString("ip"), rs.getInt("attempts"), rs.getString("first_attempt"), rs.getString("last_attempt"));
+                      attempt = new Attempt(rs.getString("ip"), rs.getInt("attempts"), rs.getString("first_attempt"), rs.getString("last_attempt"));
             return attempt;
         }
         catch (Exception e){
@@ -103,6 +101,27 @@ public class DatabaseFunctions {
             conn.setAutoCommit(false);
             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             stmt.setInt(1, top);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                attempts.add(new Attempt(rs.getString("ip"), rs.getInt("attempts"), rs.getString("first_attempt"), rs.getString("last_attempt")));
+            }
+            return attempts;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return attempts;
+        }
+    }
+
+    public static ArrayList<Attempt> selectTodays(){
+        Config.load();
+        String query = "SELECT * FROM ips WHERE DATE(last_attempt) = CURDATE();";
+        ArrayList<Attempt> attempts = new ArrayList<Attempt>();
+        try{
+            Class.forName(JDBC_DRIVER);
+            Connection conn = DriverManager.getConnection(Config.getConnectionString(), Config.getUsername(), Config.getPassword());
+            conn.setAutoCommit(false);
+            PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 attempts.add(new Attempt(rs.getString("ip"), rs.getInt("attempts"), rs.getString("first_attempt"), rs.getString("last_attempt")));

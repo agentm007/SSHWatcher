@@ -7,7 +7,8 @@ public class Main {
 
     public static  void main(String[] args){
 
-        /*ArrayList<Attempt>  attempts = DatabaseFunctions.selectTopAttempts(10);
+        DatabaseFunctions.createTable();
+        /*ArrayList<Attempt>  attempts = DatabaseFunctions.selectTodays();
         for(int i=0; i<attempts.size(); i++){
             System.out.println(attempts.get(i).toString());
         }*/

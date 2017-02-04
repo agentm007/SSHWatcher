@@ -18,14 +18,14 @@ public class Server {
                 String ipAddress = client.getInetAddress().toString().substring(1);
                 client.close();
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String date = simpleDateFormat.format(new Date());
 
                 Attempt attempt = DatabaseFunctions.getRowByIP(ipAddress);
                 if(attempt == null)
-                    DatabaseFunctions.insertNewIP(ipAddress, 1, date, date );
+                    DatabaseFunctions.insertNewIP(ipAddress, 1, date);
                 else
-                    DatabaseFunctions.incrementAttemptAndUpdateLastAttempt(ipAddress, date);
+                    DatabaseFunctions.incrementAttemptAndUpdateLastAttempt(ipAddress);
             }
 
         } catch (IOException e) {
