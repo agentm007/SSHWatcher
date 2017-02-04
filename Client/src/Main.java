@@ -6,11 +6,7 @@ import java.util.ArrayList;
 public class Main {
 
     public static  void main(String[] args){
-
-        DatabaseFunctions.createTable();
-        /*ArrayList<Attempt>  attempts = DatabaseFunctions.selectTodays();
-        for(int i=0; i<attempts.size(); i++){
-            System.out.println(attempts.get(i).toString());
-        }*/
+        Commands.getTodaysOffenders();
+        //Commands.getTopOffenders();
     }
 }

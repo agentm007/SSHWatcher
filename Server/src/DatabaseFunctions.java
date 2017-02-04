@@ -91,9 +91,8 @@ public class DatabaseFunctions {
         }
     }
 
-    public static ArrayList<Attempt> selectTopAttempts(int top){
+    public static ArrayList<Attempt> getTopResults(String query, int top){
         Config.load();
-        String query = "SELECT * FROM ips ORDER BY attempts DESC LIMIT ?;";
         ArrayList<Attempt> attempts = new ArrayList<Attempt>();
         try{
             Class.forName(JDBC_DRIVER);
@@ -112,26 +111,4 @@ public class DatabaseFunctions {
             return attempts;
         }
     }
-
-    public static ArrayList<Attempt> selectTodays(){
-        Config.load();
-        String query = "SELECT * FROM ips WHERE DATE(last_attempt) = CURDATE();";
-        ArrayList<Attempt> attempts = new ArrayList<Attempt>();
-        try{
-            Class.forName(JDBC_DRIVER);
-            Connection conn = DriverManager.getConnection(Config.getConnectionString(), Config.getUsername(), Config.getPassword());
-            conn.setAutoCommit(false);
-            PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
-                attempts.add(new Attempt(rs.getString("ip"), rs.getInt("attempts"), rs.getString("first_attempt"), rs.getString("last_attempt")));
-            }
-            return attempts;
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return attempts;
-        }
-    }
-    
 }
