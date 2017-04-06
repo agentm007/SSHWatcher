@@ -111,4 +111,25 @@ public class DatabaseFunctions {
             return attempts;
         }
     }
+
+    public static int getRowCount(){
+        Config.load();
+        String query = "SELECT COUNT(*) FROM ips";
+        int rows = 0;
+        try{
+            Class.forName(JDBC_DRIVER);
+            Connection conn = DriverManager.getConnection(Config.getConnectionString(), Config.getUsername(), Config.getPassword());
+            conn.setAutoCommit(false);
+            PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            rows = rs.getInt(1);
+            return rows;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return rows;
+        }
+    }
+
 }
