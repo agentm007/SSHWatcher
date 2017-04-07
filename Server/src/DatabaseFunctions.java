@@ -132,4 +132,29 @@ public class DatabaseFunctions {
         }
     }
 
+    public static int limitedDelete(String query, int limit){
+        Config.load();
+        int rowsAffected = 0;
+        try{
+            Class.forName(JDBC_DRIVER);
+            Connection conn = DriverManager.getConnection(Config.getConnectionString(), Config.getUsername(), Config.getPassword());
+            conn.setAutoCommit(false);
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, limit);
+            rowsAffected = stmt.executeUpdate();
+            conn.commit();
+            return rowsAffected;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return rowsAffected;
+        }
+    }
+
+    public static void closeResources(PreparedStatement stmt, Connection conn) throws SQLException{
+        if( stmt != null)
+            stmt.close();
+        if( conn != null)
+            conn.close();
+    }
 }

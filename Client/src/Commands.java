@@ -5,7 +5,6 @@ import java.util.ArrayList;
  */
 public class Commands {
 
-
     public static void getTopOffenders(){
         String query = "SELECT * FROM ips ORDER BY attempts DESC LIMIT ?;";
         ArrayList<Attempt> attempts = DatabaseFunctions.getTopResults(query, 10);
@@ -42,6 +41,21 @@ public class Commands {
         printAttempts(attempts);
     }
 
+    public static int getRowCount(){
+        return DatabaseFunctions.getRowCount();
+    }
+
+    public static int deleteLastAttempts(){
+        String query = "DELETE FROM ips ORDER BY last_attempt LIMIT ?;";
+        int rowsAffected = DatabaseFunctions.limitedDelete(query, 10);
+        return rowsAffected;
+    }
+
+    public static int deleteLastAttempts(int limit){
+        String query = "DELETE FROM ips ORDER BY last_attempt LIMIT ?;";
+        int rowsAffected = DatabaseFunctions.limitedDelete(query, limit);
+        return rowsAffected;
+    }
 
     public static void printAttempts(ArrayList<Attempt> attempts){
         for(int i=0; i<attempts.size(); i++){
