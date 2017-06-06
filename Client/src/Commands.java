@@ -62,4 +62,8 @@ public class Commands {
             System.out.println(attempts.get(i).toString());
         }
     }
+
+    public static String getVersion(){
+        return "0.1.0";
+    }
 }
